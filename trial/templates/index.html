@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Operations</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Container Styles */
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Heading Styles */
+        h1 {
+            font-size: 28px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* Textarea Styling */
+        textarea {
+            width: 95%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* Button Styling */
+        button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:active {
+            background-color: #3e8e41;
+        }
+
+        /* Radio Button & Select Styling */
+        input[type="radio"], select {
+            margin-right: 10px;
+        }
+
+        /* Translation Options (Hidden by Default) */
+        #translation-options {
+            display: none;
+            margin-top: 15px;
+        }
+
+        /* Select Dropdown Styling */
+        select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        /* Output Container Styling */
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            color: #333;
+            max-width: 600px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            textarea {
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Operations</h1>
+        <form id="textForm">
+            <label for="operation">Select an operation:</label>
+            <div>
+                <input type="radio" id="translate" name="operation" value="translate">
+                <label for="translate">Translate</label>
+            </div>
+            <div>
+                <input type="radio" id="summarize" name="operation" value="summarize">
+                <label for="summarize">Summarize</label>
+            </div>
+            <label for="text">Enter Text:</label>
+            <textarea id="text" name="text" rows="6"></textarea>
+            
+            <!-- Optional: Add language selection for translation -->
+            <div id="translation-options">
+                <label for="dest-lang">Select Language for Translation:</label>
+                <select id="dest-lang" name="dest-lang">
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                </select>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Output Section -->
+    <div class="output" id="output"></div>
+
+    <script>
+        // Toggle translation options based on user selection
+        document.getElementById('translate').addEventListener('change', function () {
+            document.getElementById('translation-options').style.display = 'block';
+        });
+        document.getElementById('summarize').addEventListener('change', function () {
+            document.getElementById('translation-options').style.display = 'none';
+        });
+
+        // Handle form submission with AJAX
+        document.getElementById('textForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('/process', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('output').innerText = data;
+            })
+            .catch(error => {
+                document.getElementById('output').innerText = 'Error: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>
